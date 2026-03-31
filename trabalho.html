@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Sistema Solar 2D</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let time = 0;
+let speed = 1;
+
+// interatividade
+window.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowUp") speed += 0.2;
+  if (e.key === "ArrowDown") speed -= 0.2;
+});
+
+// Função para desenhar círculo
+function drawCircle(radius, color) {
+  ctx.beginPath();
+  ctx.arc(0, 0, radius, 0, Math.PI * 2);
+  ctx.fillStyle = color;
+  ctx.fill();
+}
+
+//animação
+function animate() {
+  requestAnimationFrame(animate);
+
+  // reset da matriz
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+  // limpar tela
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // mover origem para o centro
+  ctx.translate(canvas.width / 2, canvas.height / 2);
+
+  //SOL
+  ctx.save();
+  drawCircle(40, "yellow");
+  ctx.restore();
+
+  // PLANETA
+  ctx.save();
+
+  // rotação ao redor do sol (ponto fixo)
+  ctx.rotate(time * 0.01 * speed);
+
+  // translação para órbita
+  ctx.translate(150, 0);
+
+  // escala (planeta menor)
+  ctx.scale(0.7, 0.7);
+
+  drawCircle(20, "blue");
+
+  //LUA (hierarquia)
+  ctx.save();
+
+  ctx.rotate(time * 0.05 * speed);
+  ctx.translate(40, 0);
+  ctx.scale(0.5, 0.5);
+
+  drawCircle(10, "gray");
+
+  ctx.restore(); // fim lua
+
+  ctx.restore(); // fim planeta
+
+  //OUTRO PLANETA
+  ctx.save();
+
+  ctx.rotate(time * 0.005 * speed);
+  ctx.translate(250, 0);
+
+  drawCircle(30, "red");
+
+  ctx.restore();
+
+  time++;
+}
+
+animate();
+</script>
+
+</body>
+</html>
